@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\CurrentUserResource;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthController extends Controller
             "email"=>$req->input("email"),
             "password"=>Hash::make($req->input("password"))
         ]);
-        return response($user,Response::HTTP_CREATED);
+        return response(new CurrentUserResource($user),Response::HTTP_CREATED);
     }
     public function login(Request $req){
         if(!Auth::attempt($req->only("email","password"))){
@@ -37,6 +38,7 @@ class AuthController extends Controller
         ])->withCookie($cookie);
     }
     public function user(Request $req){
-        return $req->user();
+        $user = $req->user();
+        return response(new CurrentUserResource($user));
     }
 }
