@@ -87,4 +87,42 @@ class ExampleTest extends TestCase
             "email"=>$user->email,
         ]);
     }
+    public function test_user_returns_error_when_not_logged_in()
+    {
+        $res = $this->get('/api/user',$this->headers);
+        $res->assertJson([
+            "message" => "Unauthenticated."
+        ]);
+    }
+    public function test_logout_returns_error_when_not_logged_in()
+    {
+        $res = $this->delete('/api/logout',[],$this->headers);
+        $res->assertJson([
+            "message" => "Unauthenticated."
+        ]);
+    }
+    public function test_logout_returns_message()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $res = $this->delete('/api/logout',[],$this->headers);
+        $res->assertJson([
+            "jwt" => null,
+            "message" => "success"
+        ]);
+    }
+    public function test_user_returns_error_after_logged_out()
+    {
+        $this->markTestIncomplete(
+            'このテストは、まだ実装されていません。'
+          );
+        // $user = User::factory()->create();
+        // Sanctum::actingAs($user);
+        // $res = $this->delete('/api/logout',[],$this->headers);
+        // $this->app->get('auth')->forgetGuards();
+        // $res = $this->get('/api/user',$this->headers);
+        // $res->assertJson([
+        //     "message" => "Unauthenticated."
+        // ]);
+    }
 }
