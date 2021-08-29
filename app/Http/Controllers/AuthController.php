@@ -57,4 +57,11 @@ class AuthController extends Controller
         );
         return response($user,Response::HTTP_ACCEPTED);
     }
+    public function updatePassword(Request $req){
+        $user = $req->user();
+        $user->update([
+            'password' => Hash::make($req->input('password'))
+        ]);
+        return response(new CurrentUserResource($user),Response::HTTP_ACCEPTED);
+    }
 }

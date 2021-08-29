@@ -150,4 +150,49 @@ class ExampleTest extends TestCase
         $updatedUser = User::find($user->id);
         $this->assertEquals($updatedUser->email,$updatedAddress);
     }
+
+    public function test_current_user_returns_new_address_after_updating()
+    {
+        $user = User::factory()->create();
+        $updatedAddress = "updated@test.io";
+        Sanctum::actingAs($user);
+        $res = $this->put('/api/user_update',[
+            "email"=>$updatedAddress
+        ],$this->headers);
+        $res = $this->get('/api/current_user',$this->headers);
+        $res->assertJson([
+            "email"=>$updatedAddress,
+        ]);
+    }
+    public function test_password_update_returns_accepted()
+    {
+        $user = User::factory()->create();
+        $updatedPassword = "updated";
+        Sanctum::actingAs($user);
+        $res = $this->put('/api/password_update',[
+            "password"=>$updatedPassword
+        ],$this->headers);
+        $res->assertStatus(202);
+    }
+
+    public function test_password_update_updates_password()
+    {
+        $this->markTestIncomplete(
+            'このテストは、まだ実装されていません。'
+          );
+        $user = User::factory()->create();
+        $updatedPassword = "updated";
+        $this->post('/api/login',[
+            "email"=>$user->email,
+            "password"=>111111
+        ],$this->headers);
+        $res = $this->put('/api/password_update',[
+            "password"=>$updatedPassword
+        ],$this->headers);
+        $res = $this->post('/api/login',[
+            "email"=>$user->email,
+            "password"=>111111
+        ],$this->headers);
+        $res->assertStatus(200);
+    }
 }
