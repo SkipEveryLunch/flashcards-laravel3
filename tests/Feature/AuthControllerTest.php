@@ -73,14 +73,14 @@ class ExampleTest extends TestCase
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
-        $res = $this->get('/api/user',$this->headers);
+        $res = $this->get('/api/current_user',$this->headers);
         $res->assertStatus(200);
     }
     public function test_user_returns_current_user_when_logged_in()
     {
         $user = User::factory()->create();
         Sanctum::actingAs($user);
-        $res = $this->get('/api/user',$this->headers);
+        $res = $this->get('/api/current_user',$this->headers);
         $res->assertJson([
             "first_name" => $user->first_name,
             "last_name" => $user->last_name,
@@ -89,7 +89,7 @@ class ExampleTest extends TestCase
     }
     public function test_user_returns_error_when_not_logged_in()
     {
-        $res = $this->get('/api/user',$this->headers);
+        $res = $this->get('/api/current_user',$this->headers);
         $res->assertJson([
             "message" => "Unauthenticated."
         ]);
@@ -116,13 +116,38 @@ class ExampleTest extends TestCase
         $this->markTestIncomplete(
             'このテストは、まだ実装されていません。'
           );
-        // $user = User::factory()->create();
-        // Sanctum::actingAs($user);
-        // $res = $this->delete('/api/logout',[],$this->headers);
-        // $this->app->get('auth')->forgetGuards();
-        // $res = $this->get('/api/user',$this->headers);
-        // $res->assertJson([
-        //     "message" => "Unauthenticated."
-        // ]);
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $res = $this->delete('/api/logout',[],$this->headers);
+        $this->app->get('auth')->forgetGuards();
+        $res = $this->get('/api/user',$this->headers);
+        $res->assertJson([
+            "message" => "Unauthenticated."
+        ]);
+    }
+    public function test_user_update_returns_updated_user()
+    {
+        $user = User::factory()->create();
+        $updatedAddress = "updated@test.io";
+        Sanctum::actingAs($user);
+        $res = $this->put('/api/user_update',[
+            "email"=>$updatedAddress
+        ],$this->headers);
+        $res->assertJson([
+            "first_name" => $user->first_name,
+            "last_name" => $user->last_name,
+            "email" => $updatedAddress
+        ])->assertStatus(202);
+    }
+    public function test_user_update_updates_user()
+    {
+        $user = User::factory()->create();
+        $updatedAddress = "updated@test.io";
+        Sanctum::actingAs($user);
+        $res = $this->put('/api/user_update',[
+            "email"=>$updatedAddress
+        ],$this->headers);
+        $updatedUser = User::find($user->id);
+        $this->assertEquals($updatedUser->email,$updatedAddress);
     }
 }
