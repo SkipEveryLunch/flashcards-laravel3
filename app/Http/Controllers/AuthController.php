@@ -19,7 +19,7 @@ class AuthController extends Controller
             "email"=>$req->input("email"),
             "password"=>Hash::make($req->input("password"))
         ]);
-        return response(new CurrentUserResource($user),Response::HTTP_CREATED);
+        return response(["user"=>new CurrentUserResource($user)],Response::HTTP_CREATED);
     }
     public function login(Request $req){
         if(!Auth::attempt($req->only("email","password"))){
@@ -39,7 +39,7 @@ class AuthController extends Controller
     }
     public function user(Request $req){
         $user = $req->user();
-        return response(new CurrentUserResource($user));
+        return response(["user"=>new CurrentUserResource($user)]);
     }
     public function logout(){
         $cookie = Cookie::forget("jwt");
@@ -55,13 +55,13 @@ class AuthController extends Controller
                     "last_name",
                     "email")
         );
-        return response($user,Response::HTTP_ACCEPTED);
+        return response(["user"=>new CurrentUserResource($user)],Response::HTTP_ACCEPTED);
     }
     public function updatePassword(Request $req){
         $user = $req->user();
         $user->update([
             'password' => Hash::make($req->input('password'))
         ]);
-        return response(new CurrentUserResource($user),Response::HTTP_ACCEPTED);
+        return response(["user"=>new CurrentUserResource($user)],Response::HTTP_ACCEPTED);
     }
 }
