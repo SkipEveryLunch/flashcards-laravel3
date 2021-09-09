@@ -9,17 +9,34 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\CurrentUserResource;
+use Exception;
 
 class AuthController extends Controller
 {
     public function register(Request $req){
-        $user = User::create([
-            "first_name"=>$req->input("first_name"),
-            "last_name"=>$req->input("last_name"),
-            "email"=>$req->input("email"),
-            "password"=>Hash::make($req->input("password"))
-        ]);
-        return response(["user"=>new CurrentUserResource($user)],Response::HTTP_CREATED);
+        try{
+            $user = User::create([
+                "first_name"=>$req->input("first_name"),
+                "last_name"=>$req->input("last_name"),
+                "email"=>$req->input("email"),
+                "password"=>Hash::make($req->input("password"))
+            ]);
+            return response(["user"=>new CurrentUserResource($user)],Response::HTTP_CREATED);
+        }catch(Exception $e){
+            if($e->errorInfo[0]==="23000"){
+                return response()->json([
+                    "message"=>"this email address is already used.",
+                    "error"=>$e->errorInfo
+                ],Response::HTTP_CONFLICT );
+            }else{
+                return response()->json([
+                    "message"=>"error occurred during creating a new user",
+                    "error"=>$e->errorInfo
+                ],Response::HTTP_BAD_REQUEST );
+            }
+
+        }
+        
     }
     public function login(Request $req){
         if(!Auth::attempt($req->only("email","password"))){
