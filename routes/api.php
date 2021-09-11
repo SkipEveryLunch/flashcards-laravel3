@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +18,13 @@ use App\Http\Controllers\AuthController;
 
 Route::post("register",[AuthController::class,"register"]);
 Route::post("login",[AuthController::class,"login"]);
+Route::get("not_found",fn()=>"hello");
+Route::apiResource('sections', SectionController::class, ['only' => ['index','show']]);
 Route::middleware('auth:sanctum')->group(
     function () {
         Route::get("current_user",[AuthController::class,"user"]);
         Route::delete("logout",[AuthController::class,"logout"]);
         Route::put("user_update",[AuthController::class,"updateInfo"]);
         Route::put("password_update",[AuthController::class,"updatePassword"]);
+        Route::apiResource('sections', SectionController::class, ['except' => ['index','show']]);
 });

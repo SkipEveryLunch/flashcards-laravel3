@@ -9,7 +9,7 @@ use Laravel\Sanctum\Sanctum;
 
 
 
-class ExampleTest extends TestCase
+class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
     /**
