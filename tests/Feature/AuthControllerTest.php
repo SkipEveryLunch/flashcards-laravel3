@@ -41,6 +41,22 @@ class ExampleTest extends TestCase
         ],$this->headers);
         $res->assertStatus(201);
     }
+    public function test_register_fails_when_email_is_duplicated()
+    {
+        $this->post('/api/register',[
+            "first_name" => $this->first_name,
+            "last_name" => $this->last_name,
+            "email"=>$this->email,
+            "password"=>$this->password
+        ],$this->headers);
+        $res = $this->post('/api/register',[
+            "first_name" => $this->first_name,
+            "last_name" => $this->last_name,
+            "email"=>$this->email,
+            "password"=>$this->password
+        ],$this->headers);
+        $res->assertStatus(409);
+    }
     public function test_register_returns_registered_user()
     {
         $res = $this->post('/api/register',[
@@ -50,9 +66,11 @@ class ExampleTest extends TestCase
             "password"=>$this->password
         ],$this->headers);
         $res->assertJson([
-            "first_name" => $this->first_name,
-            "last_name" => $this->last_name,
-            "email"=>$this->email,
+            "user"=>[
+                "first_name" => $this->first_name,
+                "last_name" => $this->last_name,
+                "email"=>$this->email,
+            ]
         ]);
     }
     public function test_login_works_with_proper_arguments()
@@ -82,9 +100,11 @@ class ExampleTest extends TestCase
         Sanctum::actingAs($user);
         $res = $this->get('/api/current_user',$this->headers);
         $res->assertJson([
-            "first_name" => $user->first_name,
-            "last_name" => $user->last_name,
-            "email"=>$user->email,
+            "user"=>[
+                "first_name" => $user->first_name,
+                "last_name" => $user->last_name,
+                "email"=>$user->email,
+            ]
         ]);
     }
     public function test_user_returns_error_when_not_logged_in()
@@ -134,9 +154,11 @@ class ExampleTest extends TestCase
             "email"=>$updatedAddress
         ],$this->headers);
         $res->assertJson([
-            "first_name" => $user->first_name,
-            "last_name" => $user->last_name,
-            "email" => $updatedAddress
+            "user"=>[
+                "first_name" => $user->first_name,
+                "last_name" => $user->last_name,
+                "email" => $updatedAddress
+            ]
         ])->assertStatus(202);
     }
     public function test_user_update_updates_user()
@@ -161,7 +183,9 @@ class ExampleTest extends TestCase
         ],$this->headers);
         $res = $this->get('/api/current_user',$this->headers);
         $res->assertJson([
-            "email"=>$updatedAddress,
+            "user"=>[
+                "email"=>$updatedAddress,
+            ]
         ]);
     }
     public function test_password_update_returns_accepted()
