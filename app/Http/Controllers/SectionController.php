@@ -7,7 +7,7 @@ use App\Models\Section;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-
+use Exception;
 
 class SectionController extends Controller
 {
@@ -33,12 +33,25 @@ class SectionController extends Controller
     }
     public function store(Request $req)
     {
-        $section = Section::create([
-            'title'=>$req->input('title'),
-        ]);
-        return response()->json([
-            "section"=>$section
-        ],Response::HTTP_CREATED);
+        try{
+            $section = Section::create([
+                'title'=>$req->input('title'),
+            ]);
+            return response()->json([
+                "section"=>$section
+            ],Response::HTTP_CREATED);
+        }catch(Exception $e){
+            if($e->errorInfo[0]==="23000"){
+            return response()->json([
+                "message"=>"title is already used."
+            ],Response::HTTP_CONFLICT);
+            }else{
+                return response()->json([
+                    "message"=>"error occurred during creating a new section",
+                    "error"=>$e->errorInfo
+                ],Response::HTTP_BAD_REQUEST );
+            }
+        }
     }
     public function update(Request $req,$id)
     {

@@ -58,6 +58,18 @@ class SectionControllerTest extends TestCase
             ]
         ]);
     }
+    public function test_duplicated_sections_returns_409()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $this->post('/api/sections',[
+            "title" => $this->title,
+        ],$this->headers);
+        $res = $this->post('/api/sections',[
+            "title" => $this->title,
+        ],$this->headers);
+        $res->assertStatus(409);
+    }
     public function test_section_show_returns_section()
     {
         $section = Section::factory()->create();
