@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,5 @@ Route::middleware('auth:sanctum')->group(
         Route::put("user_update",[AuthController::class,"updateInfo"]);
         Route::put("password_update",[AuthController::class,"updatePassword"]);
         Route::apiResource('sections', SectionController::class, ['except' => ['index','show']]);
+        Route::apiResource('questions', QuestionController::class);
 });
