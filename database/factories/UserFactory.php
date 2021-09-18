@@ -27,6 +27,7 @@ class UserFactory extends Factory
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => \Hash::make("111111"), 
+            "next_assignment"=>$this->faker->dateTimeBetween($startDate = '+1 day', $endDate = '+2 week'),
         ];
     }
 

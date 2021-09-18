@@ -17,7 +17,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ["first_name","last_name","email","password"];
+    protected $guarded = [];
 
 
     /**
@@ -26,4 +26,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = ["password"];
+    public function questions(){
+        return $this->belongsToMany(Question::class, "learnings")->withPivot("next_period","id");
+    }
 }
