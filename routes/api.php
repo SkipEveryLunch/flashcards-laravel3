@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\LearningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,8 @@ Route::middleware('auth:sanctum')->group(
         Route::put("password_update",[AuthController::class,"updatePassword"]);
         Route::apiResource('sections', SectionController::class, ['except' => ['index','show']]);
         Route::apiResource('questions', QuestionController::class, ['except' => ['index','show']]);
+        Route::get("sections/{id}/review_questions",[LearningController::class,"reviewQuestions"]);
+        Route::post("answer_reviews",[LearningController::class,"answerReviews"]);
+        Route::post("answer_questions",[LearningController::class,"answerQuestions"]);
+        Route::get("sections/{id}/new_questions",[LearningController::class,"newQuestions"]);
 });
