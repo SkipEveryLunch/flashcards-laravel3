@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\Learning;
 use App\Models\Question;
 use App\Models\Section;
+use App\Models\SectionRestriction;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
@@ -33,13 +34,16 @@ class LearningControllerTest extends TestCase
     public function test_new_question_returns_error_when_next_assignment_is_not_yet()
     {
       $number_of_questions = 3;
-      $user = User::factory()->create([
-        "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
-      ]);
+      $user = User::factory()->create();
       Sanctum::actingAs($user);
       $section = Section::factory()->create();
       $questions = Question::factory($number_of_questions)->create([
         "section_id"=>$section->id
+      ]);
+      SectionRestriction::create([
+        "user_id"=>$user->id,
+        "section_id"=>$section->id,
+        "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
       ]);
       $res = $this->get('/api/sections/'.$section->id.'/new_questions',[
         "number_of_questions"=>$number_of_questions
@@ -48,16 +52,19 @@ class LearningControllerTest extends TestCase
         "message"=>"next assignment isn't yet"
       ]);
     }
-    public function test_newQuestion_returns_the_same_number_of_questions_as_required()
+    public function test_new_question_returns_the_same_number_of_questions_when_next_assingment_has_come()
     {
       $number_of_questions = 3;
-      $user = User::factory()->create([
-        "next_assignment"=>date('Y-m-d', strtotime('-1 day'))
-      ]);
+      $user = User::factory()->create();
       Sanctum::actingAs($user);
       $section = Section::factory()->create();
       $questions = Question::factory($number_of_questions)->create([
         "section_id"=>$section->id
+      ]);
+      SectionRestriction::create([
+        "user_id"=>$user->id,
+        "section_id"=>$section->id,
+        "next_assignment"=>date('Y-m-d', strtotime('-1 day'))
       ]);
       $res = $this->get('/api/sections/'.$section->id.'/new_questions',[
         "number_of_questions"=>$number_of_questions
@@ -67,9 +74,7 @@ class LearningControllerTest extends TestCase
     public function test_answerQuestions_returns_the_same_number_of_questions_as_answered()
     {
       $number_of_questions = 3;
-      $user = User::factory()->create([
-        "next_assignment"=>date('Y-m-d', strtotime('-1 day'))
-      ]);
+      $user = User::factory()->create();
       Sanctum::actingAs($user);
       $section = Section::factory()->create();
       $questions = Question::factory($number_of_questions)->create([
@@ -84,12 +89,24 @@ class LearningControllerTest extends TestCase
       ],$this->headers);
       $this->assertEquals(count($res["learnings"]),$number_of_questions);
     }
+    public function test_answerQuestions_updates_next_period_of_learning()
+    {
+      $user = User::factory()->create();
+      Sanctum::actingAs($user);
+      $section = Section::factory()->create();
+      $question = Question::factory()->create([
+        "section_id"=>$section->id
+      ])->first();
+      $this->post('/api/answer_questions',[
+        "question_ids"=>[$question->id]
+      ],$this->headers);
+      $learning = Learning::where("user_id","=",$user->id)->where("question_id","=",$question->id)->first();
+      $this->assertEquals(date('Y-m-d', strtotime('+1 day')),$learning->next_period);
+    }
     public function test_reviewQuestions_returns_only_questions_whose_span_came()
     {
       $number_of_questions = 3;
-      $user = User::factory()->create([
-        "next_assignment"=>date('Y-m-d', strtotime('-1 day'))
-      ]);
+      $user = User::factory()->create();
       Sanctum::actingAs($user);
       $section = Section::factory()->create();
       $questions = Question::factory(5)->create([
@@ -105,12 +122,10 @@ class LearningControllerTest extends TestCase
       $res = $this->get('/api/sections/'.$section->id.'/review_questions',$this->headers);
       $this->assertEquals(count($res["questions"]),$number_of_questions);
     }
-    public function test_ranswerReviews_returns_the_same_number_of_questions_as_answered()
+    public function test_answerReviews_returns_the_same_number_of_questions_as_answered()
     {
       $number_of_questions = 3;
-      $user = User::factory()->create([
-        "next_assignment"=>date('Y-m-d', strtotime('-1 day'))
-      ]);
+      $user = User::factory()->create();
       Sanctum::actingAs($user);
       $section = Section::factory()->create();
       $questions = Question::factory($number_of_questions)->create([
@@ -129,5 +144,24 @@ class LearningControllerTest extends TestCase
         "question_ids"=>$qIds 
       ],$this->headers);
       $this->assertEquals(count($res["learnings"]),$number_of_questions);
+    }
+    public function test_answerReviews_updates_next_period_of_learning()
+    {
+      $user = User::factory()->create();
+      Sanctum::actingAs($user);
+      $section = Section::factory()->create();
+      $question = Question::factory()->create([
+        "section_id"=>$section->id,
+      ])->first();
+      Learning::factory()->create([
+          "question_id"=>$question->id,
+          "user_id"=>$user->id,
+          "next_period"=>date('Y-m-d', strtotime('-1 day'))
+      ]);
+      $res = $this->post('/api/answer_reviews',[
+        "question_ids"=>[$question->id]
+      ],$this->headers);
+      $learning = Learning::where("user_id","=",$user->id)->where("question_id","=",$question->id)->first();
+      $this->assertEquals(date('Y-m-d', strtotime('+1 day')),$learning->next_period);
     }
 }

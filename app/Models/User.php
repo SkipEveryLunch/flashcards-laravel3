@@ -29,4 +29,15 @@ class User extends Authenticatable
     public function questions(){
         return $this->belongsToMany(Question::class, "learnings")->withPivot("next_period","id");
     }
+    public function sections(){
+        return $this->belongsToMany(Section::class, "section_restrictions")->withPivot("next_assignment","id");
+    }
+    public function getNextAssignment($sectionId){
+        $section = $this->sections->where('id', '=', $sectionId)->first();
+        if($section){
+            return $section->pivot->next_assignment;
+        }else{
+            return null;
+        }
+    }
 }

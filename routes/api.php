@@ -35,4 +35,5 @@ Route::middleware('auth:sanctum')->group(
         Route::post("answer_reviews",[LearningController::class,"answerReviews"]);
         Route::post("answer_questions",[LearningController::class,"answerQuestions"]);
         Route::get("sections/{id}/new_questions",[LearningController::class,"newQuestions"]);
+        Route::get("sections/{id}/test",[LearningController::class,"test"]);
 });

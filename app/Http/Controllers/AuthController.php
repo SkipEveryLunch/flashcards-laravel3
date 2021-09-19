@@ -20,7 +20,6 @@ class AuthController extends Controller
                 "last_name"=>$req->input("last_name"),
                 "email"=>$req->input("email"),
                 "password"=>Hash::make($req->input("password")),
-                "next_assignment"=>date("Y-m-d"),
             ]);
             return response(["user"=>new CurrentUserResource($user)],Response::HTTP_CREATED);
         }catch(Exception $e){

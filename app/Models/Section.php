@@ -13,4 +13,7 @@ class Section extends Model
     public function questions(){
         return $this->hasMany(Question::class);
     }
+    public function users(){
+        return $this->belongsToMany(User::class, "section_restrictions")->withPivot("next_assignment","id");
+    }
 }

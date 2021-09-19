@@ -7,6 +7,7 @@ use App\Models\Section;
 use App\Models\User;
 use App\Models\Question;
 use App\Models\Learning;
+use App\Models\SectionRestriction;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,9 +27,21 @@ class LearningController extends Controller
     {
         $numOfQ = $req->input('number_of_questions');
         $user = $req->user();
-        if($user->next_assignment>date("Y-m-d")){
+        if($user && $user->getNextAssignment($id)>date("Y-m-d")){
             return response()->json(["message"=>"next assignment isn't yet"]);
         }else{
+            if($user->getNextAssignment($id)){
+                $sectionRestriction = SectionRestriction::where("user_id","=",$user->id)->where("section_id","=",$id)->first();
+                $sectionRestriction->update([
+                    "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
+                ]);
+            }else{
+                SectionRestriction::create([
+                    "user_id"=>$user->id,
+                    "section_id"=>$id,
+                    "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
+                ]);
+            }
             $questions = Question::inRandomOrder()->whereDoesntHave('users', function($q)use($user){
                 $q->where('user_id', '=', $user->id);
             })->where("section_id","=",$id)->take($numOfQ)->get();
@@ -52,9 +65,6 @@ class LearningController extends Controller
             ]);
             array_push($result, $learning);
         }
-        $user->update([
-            "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
-        ]);
         return response()->json([
             "learnings"=>$result
         ]);
@@ -76,13 +86,33 @@ class LearningController extends Controller
         foreach($qIds as $qId){
             $learning = Learning::where("user_id",$user->id)->where("question_id",$qId)->first();
             $learning->update([
-                "next_period"=>date("Y-m-d",strtotime($learning->next_period."+" . $learning->next_span . " day")),
+                "next_period"=>date("Y-m-d",strtotime("+" . $learning->next_span . " day")),
                 "next_span"=>nextSpan($learning->next_span)
             ]);
             array_push($result, $learning);
         }
         return response()->json([
             "learnings"=>$result
+        ]);
+    }
+    public function test(Request $req,$id)
+    {
+        $user = $req->user();
+        // $date = date("Y-m-d",strtotime('+1 day'));
+        // $sectionRestriction = SectionRestriction::where("user_id","=",$user->id)->where("section_id","=",$id)->first();
+        // $sectionRestriction->update([
+        //     "next_assignment"=>$date
+        // ]);
+
+        $next_assignment = $user->getNextAssignment($id);
+
+        // SectionRestriction::create([
+        //     "user_id"=>$user->id,
+        //     "section_id"=>$id,
+        //     "next_assignment"=>date("Y-m-d")
+        // ]);
+        return response()->json([
+            "section"=>$next_assignment
         ]);
     }
 }
