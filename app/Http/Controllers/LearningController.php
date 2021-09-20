@@ -25,7 +25,7 @@ class LearningController extends Controller
 {
     public function newQuestions(Request $req,$id)
     {
-        $numOfQ = $req->input('number_of_questions');
+        $numOfQ = 5;
         $user = $req->user();
         if($user && $user->getNextAssignment($id)>date("Y-m-d")){
             return response()->json(["message"=>"next assignment isn't yet"]);
