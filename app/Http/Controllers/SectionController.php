@@ -20,7 +20,7 @@ class SectionController extends Controller
     }
     public function show($id)
     {
-        $section = Section::find($id);
+        $section = Section::with("questions")->find($id);
         if($section){
             return response()->json([
                 "section"=>$section
