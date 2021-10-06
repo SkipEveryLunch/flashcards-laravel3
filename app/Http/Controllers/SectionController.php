@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
+use App\Http\Resources\SectionResource;
 
 class SectionController extends Controller
 {
@@ -15,7 +16,7 @@ class SectionController extends Controller
     public function index(){
         $sections = Section::all();
         return response()->json([
-            "sections"=>$sections
+            "sections"=>SectionResource::collection($sections)
         ]);
     }
     public function show($id)
