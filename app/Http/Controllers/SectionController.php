@@ -19,9 +19,12 @@ class SectionController extends Controller
             "sections"=>SectionResource::collection($sections)
         ]);
     }
-    public function show($id)
+    public function show(Request $req,$id)
     {
+        $user = $req->user();
         $section = Section::with("questions")->find($id);
+        $section->count_questions = $section->countQuestions();
+        $section->complete_rate = $section->getCompleteRate($user);
         if($section){
             return response()->json([
                 "section"=>$section

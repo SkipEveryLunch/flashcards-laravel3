@@ -21,7 +21,7 @@ use App\Http\Controllers\LearningController;
 Route::post("register",[AuthController::class,"register"]);
 Route::post("login",[AuthController::class,"login"]);
 Route::get("not_found",fn()=>"hello");
-Route::apiResource('sections', SectionController::class, ['only' => ['index','show']]);
+Route::apiResource('sections', SectionController::class, ['only' => ['index']]);
 Route::apiResource('questions', QuestionController::class, ['only' => ['index','show']]);
 Route::middleware('auth:sanctum')->group(
     function () {
@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(
         Route::delete("logout",[AuthController::class,"logout"]);
         Route::put("user_update",[AuthController::class,"updateInfo"]);
         Route::put("password_update",[AuthController::class,"updatePassword"]);
-        Route::apiResource('sections', SectionController::class, ['except' => ['index','show']]);
+        Route::apiResource('sections', SectionController::class, ['except' => ['index']]);
         Route::apiResource('questions', QuestionController::class, ['except' => ['index','show']]);
         Route::get("sections/{id}/review_questions",[LearningController::class,"reviewQuestions"]);
         Route::post("answer_reviews",[LearningController::class,"answerReviews"]);

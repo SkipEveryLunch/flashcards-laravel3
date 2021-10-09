@@ -19,8 +19,17 @@ class Section extends Model
     public function countQuestions(){
         return Question::where("section_id","=",$this->id)->count();
     }
-    public function countCompleted($userId){
+    function getLearnings($user){
         $questionsIds = Question::where("section_id","=",1)->pluck("id")->toArray();
-        return Learning::where("user_id","=",$userId)->whereIn("question_id",$questionsIds)->count();
+        return Learning::where("user_id","=",$user->id)->whereIn("question_id",$questionsIds)->get();
+    }
+    public function getCompleteRate($user){
+        $completedScore = $this->getLearnings($user)->sum("learning_stage");
+        $goal = $this->countQuestions() * 5;
+        try{
+            return $completedScore / $goal;
+        }catch(Exception $e){
+            return 0;
+        }
     }
 }
