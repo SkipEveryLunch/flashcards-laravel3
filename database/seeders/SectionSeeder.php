@@ -22,23 +22,20 @@ class SectionSeeder extends Seeder
             $questions = Question::factory(30)->create([
                 "section_id" => $section->id
             ]);
-            foreach($questions as $question){
-                $users = User::all()->toArray();
-               $randUsers = rand_els($users);
-                foreach($randUsers as $user){
-                    Learning::factory()->create([
-                        "question_id"=>$question->id,
-                        "user_id"=>$user["id"],
-                    ]);
-                }
-            }
+            // foreach($questions as $question){
+            //     $users = User::all()->toArray();
+            //    $randUsers = rand_els($users);
+            //     foreach($randUsers as $user){
+            //         Learning::factory()->create([
+            //             "question_id"=>$question->id,
+            //             "user_id"=>$user["id"],
+            //         ]);
+            //     }
+            // }
         }
     }
 }
-
 function rand_els($arr){
-    // $randInt = mt_rand(1,4);
-    // dump($randInt);
     $randIds = array_rand($arr,3);
     $randUsers = [];
     foreach($randIds as $id){
