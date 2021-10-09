@@ -20,7 +20,7 @@ class Section extends Model
         return Question::where("section_id","=",$this->id)->count();
     }
     function getLearnings($user){
-        $questionsIds = Question::where("section_id","=",1)->pluck("id")->toArray();
+        $questionsIds = Question::where("section_id","=",$this->id)->pluck("id")->toArray();
         return Learning::where("user_id","=",$user->id)->whereIn("question_id",$questionsIds)->get();
     }
     public function getCompleteRate($user){
