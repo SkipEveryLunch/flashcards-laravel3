@@ -16,7 +16,7 @@ class CreateLearningsTable extends Migration
         Schema::create('learnings', function (Blueprint $table) {
             $table->id();
             $table->date("next_period");
-            $table->integer("next_span")->default(1);
+            $table->integer("learning_stage")->default(1);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('question_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
