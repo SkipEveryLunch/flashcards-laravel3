@@ -22,7 +22,6 @@ Route::post("register",[AuthController::class,"register"]);
 Route::post("login",[AuthController::class,"login"]);
 Route::get("not_found",fn()=>"hello");
 Route::apiResource('sections', SectionController::class, ['only' => ['index']]);
-Route::apiResource('questions', QuestionController::class, ['only' => ['index','show']]);
 Route::middleware('auth:sanctum')->group(
     function () {
         Route::get("current_user",[AuthController::class,"user"]);
@@ -30,7 +29,7 @@ Route::middleware('auth:sanctum')->group(
         Route::put("user_update",[AuthController::class,"updateInfo"]);
         Route::put("password_update",[AuthController::class,"updatePassword"]);
         Route::apiResource('sections', SectionController::class, ['except' => ['index']]);
-        Route::apiResource('questions', QuestionController::class, ['except' => ['index','show']]);
+        Route::apiResource('questions', QuestionController::class);
         Route::get("sections/{id}/review_questions",[LearningController::class,"reviewQuestions"]);
         Route::post("answer_reviews",[LearningController::class,"answerReviews"]);
         Route::post("answer_questions",[LearningController::class,"answerQuestions"]);

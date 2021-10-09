@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Section;
+use App\Models\Question;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +23,19 @@ class SectionController extends Controller
     public function show(Request $req,$id)
     {
         $user = $req->user();
-        $section = Section::with("questions")->find($id);
-        $section->count_questions = $section->countQuestions();
-        $section->complete_rate = $section->getCompleteRate($user);
+        $section = Section::find($id);
         if($section){
+            $section->count_questions = $section->countQuestions();
+            $section->complete_rate = $section->getCompleteRate($user);
+            $questions = Question::where("section_id","=",$id)->get();
+            foreach ($questions as $question) {
+                $learning = $question->getLearning($user);
+                if($learning){
+                    $question->next_period = $learning->next_period;
+                    $question->learning_stage = $learning->learning_stage;
+                }
+            }
+            $section->questions = $questions;
             return response()->json([
                 "section"=>$section
             ]);

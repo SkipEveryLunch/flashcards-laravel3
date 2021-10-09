@@ -13,4 +13,7 @@ class Question extends Model
     public function users(){
         return $this->belongsToMany(User::class, "learnings");
     }
+    public function getLearning($user){
+        return Learning::where("user_id","=",$user->id)->where("question_id","=",$this->id)->first();
+    }
 }
