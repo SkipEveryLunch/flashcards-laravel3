@@ -50,6 +50,7 @@ class SectionController extends Controller
         try{
             $section = Section::create([
                 'title'=>$req->input('title'),
+                'description'=>$req->input('description'),
             ]);
             return response()->json([
                 "section"=>$section
