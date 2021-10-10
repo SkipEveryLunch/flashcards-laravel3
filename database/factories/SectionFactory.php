@@ -23,6 +23,7 @@ class SectionFactory extends Factory
     {
         return [
             "title"=>$this->faker->word(2,true),
+            "description"=>$this->faker->paragraph(2,true),
         ];
     }
 }
