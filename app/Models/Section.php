@@ -26,10 +26,9 @@ class Section extends Model
     public function getCompleteRate($user){
         $completedScore = $this->getLearnings($user)->sum("learning_stage");
         $goal = $this->countQuestions() * 5;
-        try{
-            return $completedScore / $goal;
-        }catch(Exception $e){
+        if($goal == 0){
             return 0;
         }
+            return $completedScore / $goal;
     }
 }
