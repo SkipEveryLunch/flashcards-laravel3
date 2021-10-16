@@ -10,6 +10,7 @@ use App\Models\Learning;
 use App\Models\SectionRestriction;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\QuestionResource;
 
 class LearningController extends Controller
 {
@@ -24,8 +25,9 @@ class LearningController extends Controller
                 $q->where('user_id', '=', $user->id);
             })->where("section_id","=",$id)->take($numOfQ)->get();
             return response()->json([
-                "questions"=>$questions
+                "questions"=>            QuestionResource::collection($questions)
             ]);
+
         }
     }
     public function answerQuestions(Request $req,$sectionId)
@@ -66,7 +68,7 @@ class LearningController extends Controller
             return $q->pivot->next_period <= date("Y-m-d");
         })->values();
         return response()->json([
-            "questions"=>$questions
+            "questions"=>QuestionResource::collection($questions)
         ]);
     }
     public function answerReviews(Request $req){
