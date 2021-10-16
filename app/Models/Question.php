@@ -16,10 +16,10 @@ class Question extends Model
     public function getLearning($user){
         return Learning::where("user_id","=",$user->id)->where("question_id","=",$this->id)->first();
     }
-    public function getFavsAttribute(){
-        return Favorite::where("type","=","fav")->where("question_id","=",$this->id)->count();
+    public function getFavedByAttribute(){
+        return Favorite::where("type","=","fav")->where("question_id","=",$this->id)->pluck("user_id");
     }
-    public function getUnfavsAttribute(){
-        return Favorite::where("type","=","unfav")->where("question_id","=",$this->id)->count();
+    public function getUnfavedByAttribute(){
+        return Favorite::where("type","=","unfav")->where("question_id","=",$this->id)->pluck("user_id");
     }
 }
