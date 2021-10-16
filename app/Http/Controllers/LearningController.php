@@ -20,18 +20,6 @@ class LearningController extends Controller
         if($user && $user->getNextAssignment($id)>date("Y-m-d")){
             return response()->json(["message"=>"next assignment isn't yet"]);
         }else{
-            if($user->getNextAssignment($id)){
-                $sectionRestriction = SectionRestriction::where("user_id","=",$user->id)->where("section_id","=",$id)->first();
-                $sectionRestriction->update([
-                    "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
-                ]);
-            }else{
-                SectionRestriction::create([
-                    "user_id"=>$user->id,
-                    "section_id"=>$id,
-                    "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
-                ]);
-            }
             $questions = Question::inRandomOrder()->whereDoesntHave('users', function($q)use($user){
                 $q->where('user_id', '=', $user->id);
             })->where("section_id","=",$id)->take($numOfQ)->get();
@@ -40,11 +28,24 @@ class LearningController extends Controller
             ]);
         }
     }
-    public function answerQuestions(Request $req)
+    public function answerQuestions(Request $req,$sectionId)
     {
         $user = $req->user();
         $qIds = $req->input('question_ids');
         $result = [];
+
+        if($user->getNextAssignment($sectionId)){
+            $sectionRestriction = SectionRestriction::where("user_id","=",$user->id)->where("section_id","=",$sectionId)->first();
+            $sectionRestriction->update([
+                "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
+            ]);
+        }else{
+            SectionRestriction::create([
+                "user_id"=>$user->id,
+                "section_id"=>$sectionId,
+                "next_assignment"=>date('Y-m-d', strtotime('+1 day'))
+            ]);
+        }
         
         foreach($qIds as $qId){
             $learning = Learning::create([

@@ -32,7 +32,7 @@ Route::middleware('auth:sanctum')->group(
         Route::apiResource('questions', QuestionController::class);
         Route::get("sections/{id}/review_questions",[LearningController::class,"reviewQuestions"]);
         Route::post("answer_reviews",[LearningController::class,"answerReviews"]);
-        Route::post("answer_questions",[LearningController::class,"answerQuestions"]);
+        Route::post("sections/{sectionId}/answer_questions",[LearningController::class,"answerQuestions"]);
         Route::get("sections/{id}/new_questions",[LearningController::class,"newQuestions"]);
         Route::get("sections/{id}/test",[LearningController::class,"test"]);
 });
