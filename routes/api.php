@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LearningController;
-
+use App\Http\Controllers\FavoriteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,4 +35,6 @@ Route::middleware('auth:sanctum')->group(
         Route::post("sections/{sectionId}/answer_questions",[LearningController::class,"answerQuestions"]);
         Route::get("sections/{id}/new_questions",[LearningController::class,"newQuestions"]);
         Route::get("sections/{id}/test",[LearningController::class,"test"]);
+        Route::post("favorites/{questionId}",[FavoriteController::class,"store"]);
+        Route::delete("favorites/{questionId}",[FavoriteController::class,"destroy"]);
 });

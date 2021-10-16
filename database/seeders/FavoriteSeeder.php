@@ -24,7 +24,7 @@ class FavoriteSeeder extends Seeder
             foreach($users as $user){
                 if(rand_judge(2)){
                     Favorite::create([
-                    "type"=>rand_judge(2)?"fav":"unfav",
+                    "type"=>rand_judge(2)?"like":"dislike",
                     "user_id"=>$user["id"],
                     "question_id"=>$question["id"]
                     ]);
