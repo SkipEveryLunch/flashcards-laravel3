@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Question;
+use App\Http\Resources\QuestionResource;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 
@@ -11,14 +12,14 @@ class QuestionController extends Controller
 {
     public function index(){
         $questions = Question::all();
-        return response()->json(["questions"=>$questions]);
+        return response()->json([        "questions"=>QuestionResource::collection($questions)]);
     }
     public function show(Request $req, $id)
     {
         $question = Question::find($id);
         if($question){
             return response()->json([
-                "question"=>$question
+                "question"=>new QuestionResource($question)
             ]);
         }else{
             return response()->json([
@@ -33,7 +34,7 @@ class QuestionController extends Controller
                 $req->only("front","back","section_id")
             );
             return response()->json([
-                "question"=>$question
+                "question"=>new QuestionResource($question)
             ],Response::HTTP_CREATED);
         }catch(Exception $e){
             if($e->errorInfo[0]==="23000"){
@@ -55,7 +56,7 @@ class QuestionController extends Controller
                 $req->only("front","back","section_id")
             );
             return response()->json([
-                "question"=>$question
+                "question"=>new QuestionResource($question)
             ],Response::HTTP_ACCEPTED);
         }else{
             return response()->json([
