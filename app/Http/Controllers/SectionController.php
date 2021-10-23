@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use App\Http\Resources\SectionResource;
+use App\Http\Resources\QuestionResource;
 
 class SectionController extends Controller
 {
@@ -35,7 +36,7 @@ class SectionController extends Controller
                     $question->learning_stage = $learning->learning_stage;
                 }
             }
-            $section->questions = $questions;
+            $section->questions = QuestionResource::collection($questions);
             return response()->json([
                 "section"=>$section
             ]);
