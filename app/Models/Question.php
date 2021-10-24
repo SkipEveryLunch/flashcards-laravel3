@@ -16,10 +16,4 @@ class Question extends Model
     public function getLearning($user){
         return Learning::where("user_id","=",$user->id)->where("question_id","=",$this->id)->first();
     }
-    public function getLikedByAttribute(){
-        return Favorite::where("type","=","like")->where("question_id","=",$this->id)->pluck("user_id");
-    }
-    public function getDislikedByAttribute(){
-        return Favorite::where("type","=","dislike")->where("question_id","=",$this->id)->pluck("user_id");
-    }
 }
