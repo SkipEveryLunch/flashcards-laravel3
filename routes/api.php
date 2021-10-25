@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LearningController;
+use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,4 +35,6 @@ Route::middleware('auth:sanctum')->group(
         Route::post("sections/{sectionId}/answer_questions",[LearningController::class,"answerQuestions"]);
         Route::get("sections/{id}/new_questions",[LearningController::class,"newQuestions"]);
         Route::get("sections/{id}/test",[LearningController::class,"test"]);
+        Route::post("comments/{questionId}",[CommentController::class,"store"]);
+        Route::delete("comments/{questionId}",[CommentController::class,"destroy"]);
 });

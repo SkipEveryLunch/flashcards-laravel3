@@ -16,4 +16,10 @@ class Question extends Model
     public function getLearning($user){
         return Learning::where("user_id","=",$user->id)->where("question_id","=",$this->id)->first();
     }
+    public function getCommentedByAttribute(){
+        return Comment::where("question_id","=",$this->id)->pluck("user_id");
+    }
+    public function getCommentsAttribute(){
+        return Comment::where("question_id","=",$this->id)->get();
+    }
 }
