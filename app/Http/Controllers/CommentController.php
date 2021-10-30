@@ -13,8 +13,8 @@ class CommentController extends Controller
         $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
         if(!$comment){
             $comment = Comment::create([
-                "type"=>$req->input("type"),
-                "detail"=>$req->input("detail"),
+                "comment_type"=>$req->input("comment_type"),
+                "comment_detail"=>$req->input("comment_detail"),
                 "user_id"=>$user->id,
                 "question_id"=>$questionId,
             ]);

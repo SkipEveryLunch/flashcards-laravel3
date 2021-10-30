@@ -22,8 +22,8 @@ class CommentFactory extends Factory
     public function definition()
     {
         return [
-            "type"=>$this->faker->word(2,true),
-            "detail"=>$this->faker->paragraph(2,true),
+            "comment_type"=>$this->faker->word(2,true),
+            "comment_detail"=>$this->faker->paragraph(2,true),
         ];
     }
 }
