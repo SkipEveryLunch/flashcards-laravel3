@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Question;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class QuestionFactory extends Factory
@@ -21,9 +22,11 @@ class QuestionFactory extends Factory
      */
     public function definition()
     {
+        $users = User::all();
         return [
             "front"=>$this->faker->paragraph(2,true),
             "back"=>$this->faker->paragraph(2,true),
+            "posted_by"=>$this->faker->randomElement($users)->id
         ];
     }
 }

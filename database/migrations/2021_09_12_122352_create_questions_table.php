@@ -19,6 +19,8 @@ class CreateQuestionsTable extends Migration
             $table->string("back");
             $table->unsignedBigInteger('section_id')->default(1);
             $table->foreign('section_id')->references('id')->on('sections')->onDelete;
+            $table->unsignedBigInteger('posted_by')->default(1);
+            $table->foreign('posted_by')->references('id')->on('users')->onDelete;
             $table->timestamps();
         });
     }

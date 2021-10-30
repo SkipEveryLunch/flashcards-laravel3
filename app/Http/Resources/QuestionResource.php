@@ -18,8 +18,7 @@ class QuestionResource extends JsonResource
             "id"=>$this->id,
             "front"=>$this->front,
             "back"=>$this->back,
-            "likedBy"=>$this->likedBy,
-            "dislikedBy"=>$this->dislikedBy,
+            "posted_by"=>$this->posted_by,
             "created_at"=>$this->created_at,
             "updated_at"=>$this->updated_at,
         ];

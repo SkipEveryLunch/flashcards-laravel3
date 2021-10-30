@@ -29,13 +29,6 @@ class SectionController extends Controller
             $section->count_questions = $section->countQuestions();
             $section->complete_rate = $section->getCompleteRate($user);
             $questions = Question::where("section_id","=",$id)->get();
-            foreach ($questions as $question) {
-                $learning = $question->getLearning($user);
-                if($learning){
-                    $question->next_period = $learning->next_period;
-                    $question->learning_stage = $learning->learning_stage;
-                }
-            }
             $section->questions = QuestionResource::collection($questions);
             return response()->json([
                 "section"=>$section
