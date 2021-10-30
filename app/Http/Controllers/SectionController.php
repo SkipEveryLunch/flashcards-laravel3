@@ -28,8 +28,7 @@ class SectionController extends Controller
         if($section){
             $section->count_questions = $section->countQuestions();
             $section->complete_rate = $section->getCompleteRate($user);
-            $questions = Question::where("section_id","=",$id)->get();
-            $section->questions = QuestionResource::collection($questions);
+            $section->questions = QuestionResource::collection($section->questions()->get());
             return response()->json([
                 "section"=>$section
             ]);
