@@ -28,7 +28,22 @@ class SectionController extends Controller
         if($section){
             $section->count_questions = $section->countQuestions();
             $section->complete_rate = $section->getCompleteRate($user);
-            $section->questions = QuestionResource::collection($section->questions()->get());
+            $questions = $section->questions()->get()->map(function($q)use($user){
+                $learning = $q->getLearning($user);
+                return [
+                    "id"=> $q->id,
+                    "front"=> $q->front,
+                    "back"=> $q->back,
+                    "section_id"=> $q->section_id,
+                    "posted_by"=> $q->posted_by,
+                    "commented_by"=> $q->commented_by,
+                    "created_at"=> $q->created_at,
+                    "updated_at"=> $q->updated_at,
+                    "next_period" => $learning?$learning->next_period:"",
+                    "learning_stage" => $learning?$learning->learning_stage:""
+                ];
+            });
+            $section->questions = $questions;
             return response()->json([
                 "section"=>$section
             ]);
