@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Comment;
+use App\Models\Question;
 
 class CommentController extends Controller
 {
@@ -19,6 +20,20 @@ class CommentController extends Controller
             return response()->json([
                 "message"=>"comment not found"
             ],Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function showSeveral(Request $req,$questionId){
+        $user = $req->user();
+        $question = Question::find($questionId);
+        if($question->posted_by === $user->id){
+            $comments = Comment::where("question_id","=",$questionId)->get();
+            return response()->json([
+                "comments"=>$comments
+            ]);
+        }else{
+            return response()->json([
+                "message"=>"you didn't post this question"
+            ],Response::HTTP_BAD_REQUEST);
         }
     }
     public function store(Request $req,$questionId){

@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(
         Route::get("sections/{id}/new_questions",[LearningController::class,"newQuestions"]);
         Route::get("sections/{id}/test",[LearningController::class,"test"]);
         Route::get("questions_comments/{questionId}",[CommentController::class,"show"]);
+        Route::get("questions_several_comments/{questionId}",[CommentController::class,"showSeveral"]);
         Route::post("questions_comments/{questionId}",[CommentController::class,"store"]);
         Route::put("questions_comments/{questionId}",[CommentController::class,"update"]);
         Route::delete("questions_comments/{questionId}",[CommentController::class,"destroy"]);
