@@ -7,6 +7,7 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MessageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -40,4 +41,5 @@ Route::middleware('auth:sanctum')->group(
         Route::post("questions_comments/{questionId}",[CommentController::class,"store"]);
         Route::put("questions_comments/{questionId}",[CommentController::class,"update"]);
         Route::delete("questions_comments/{questionId}",[CommentController::class,"destroy"]);
+        Route::get("messages",[MessageController::class,"show"]);
 });
