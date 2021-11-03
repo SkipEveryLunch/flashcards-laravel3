@@ -8,6 +8,19 @@ use App\Models\Comment;
 
 class CommentController extends Controller
 {
+    public function show(Request $req,$questionId){
+        $user = $req->user();
+        $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
+        if($comment){
+            return response()->json([
+                "comment"=>$comment
+            ]);
+        }else{
+            return response()->json([
+                "message"=>"comment not found"
+            ],Response::HTTP_NOT_FOUND);
+        }
+    }
     public function store(Request $req,$questionId){
         $user = $req->user();
         $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
@@ -25,6 +38,22 @@ class CommentController extends Controller
             return response()->json([
                 "message"=>"already commented."
             ],Response::HTTP_CONFLICT);
+        }
+    }    
+    public function update(Request $req,$questionId){
+        $user = $req->user();
+        $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
+        if($comment){
+            $comment->update(
+                $req->only("comment_type","comment_detail")
+            );
+            return response()->json([
+                "comment"=>$comment
+            ]);
+        }else{
+            return response()->json([
+                "message"=>"not commented."
+            ],Response::HTTP_NOT_FOUND);
         }
     }
     public function destroy(Request $req,$questionId){
