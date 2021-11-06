@@ -31,6 +31,9 @@ class User extends Authenticatable
     }
     public function sections(){
         return $this->belongsToMany(Section::class, "section_restrictions")->withPivot("next_assignment","id");
+    }    
+    public function unconfirmedMessages(){
+        return Message::where("is_confirmed","=",false)->where("user_id","=",$this->id)->count();
     }
     public function getNextAssignment($sectionId){
         $section = $this->sections->where('id', '=', $sectionId)->first();
