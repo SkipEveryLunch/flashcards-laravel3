@@ -14,4 +14,20 @@ class MessageController extends Controller
         "messages"=>$messages
     ]);
   }
+  public function confirm(Request $req,$messageId){
+    $user = $req->user();
+    $message = Message::find($messageId);
+    if($message->user_id===$user->id){
+      $message->update([
+        "is_confirmed"=>true
+      ]);
+      return response()->json([
+        "message"=>$message
+      ]);
+    }else{
+      return response()->json([
+        "message"=>"あなた以外の人あてのメッセージです"
+      ],Response::HTTP_CONFLICT);
+    }
+  }
 }

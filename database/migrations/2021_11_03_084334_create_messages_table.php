@@ -19,7 +19,7 @@ class CreateMessagesTable extends Migration
             $table->string('body');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->boolean('is_read')->default(false);
+            $table->boolean('is_confirmed')->default(false);
             $table->string('link_type');
             $table->json('link_data');
             $table->timestamps();
