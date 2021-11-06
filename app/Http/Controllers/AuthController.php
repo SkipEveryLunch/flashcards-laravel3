@@ -51,7 +51,7 @@ class AuthController extends Controller
         );
         return response([
             "jwt"=>$jwt,
-            "user"=>$user
+            "user"=>new CurrentUserResource($user)
         ])->withCookie($cookie);
     }
     public function user(Request $req){
