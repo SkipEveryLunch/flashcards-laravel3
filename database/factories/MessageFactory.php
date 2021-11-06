@@ -30,7 +30,7 @@ class MessageFactory extends Factory
         return [
             "title"=>$this->faker->word(2,true),
             "body"=>$this->faker->paragraph(2,true),
-            "user_id"=>$comment->user_id,
+            "user_id"=>$question->posted_by,
             "link_type"=>"comment",
             "link_data"=>json_encode([
                 "section_id"=>$question->section_id,
