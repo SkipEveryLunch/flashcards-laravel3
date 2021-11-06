@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Comment;
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MessageFactory extends Factory
@@ -22,11 +24,18 @@ class MessageFactory extends Factory
      */
     public function definition()
     {
-        $users = User::all();
+        $comment = Comment::inRandomOrder()->first();;
+        $question = Question::find($comment->question_id);
+
         return [
             "title"=>$this->faker->word(2,true),
             "body"=>$this->faker->paragraph(2,true),
-            "user_id"=>$this->faker->randomElement($users)
+            "user_id"=>$comment->user_id,
+            "link_type"=>"comment",
+            "link_data"=>json_encode([
+                "section_id"=>$question->section_id,
+                "question_id"=>$question->id,
+            ])
         ];
     }
 }
