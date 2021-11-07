@@ -28,6 +28,7 @@ class CommentController extends Controller
         if($question->posted_by === $user->id){
             $comments = Comment::where("question_id","=",$questionId)->get();
             return response()->json([
+                "commented_to"=>$question->posted_by,
                 "comments"=>$comments
             ]);
         }else{
