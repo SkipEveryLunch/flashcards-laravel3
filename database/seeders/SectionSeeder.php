@@ -17,10 +17,7 @@ class SectionSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::inRandomOrder()->first();
-        $sections = Section::factory(4)->create([
-            "user_id"=>$user->id
-        ]);
+        $sections = Section::factory(4)->create();
         foreach($sections as $section){
             $questions = Question::factory(30)->create([
                 "section_id" => $section->id
