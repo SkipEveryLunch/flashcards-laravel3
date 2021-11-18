@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Question;
+use App\Models\Series;
 
 class Section extends Model
 {
@@ -30,5 +31,8 @@ class Section extends Model
             return 0;
         }
             return $completedScore / $goal;
+    }
+    public function series(){
+        return $this->belongsTo(Series::class);
     }
 }

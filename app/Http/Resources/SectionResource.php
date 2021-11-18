@@ -21,7 +21,8 @@ class SectionResource extends JsonResource
             "created_at"=>$this->created_at,
             "updated_at"=>$this->updated_at,
             "count_questions"=>$this->countQuestions(),
-            "posted_by"=>$this->user_id
+            "posted_by"=>$this->user_id,
+            "series"=>$this->series->name
         ];
     }
 }

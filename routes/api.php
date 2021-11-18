@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\CommentController;
@@ -23,6 +24,7 @@ Route::post("register",[AuthController::class,"register"]);
 Route::post("login",[AuthController::class,"login"]);
 Route::get("not_found",fn()=>"hello");
 Route::apiResource('sections', SectionController::class, ['only' => ['index']]);
+Route::apiResource('series', SeriesController::class, ['only' => ['index']]);
 Route::middleware('auth:sanctum')->group(
     function () {
         Route::get("current_user",[AuthController::class,"user"]);
