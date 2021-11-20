@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             SeriesSeeder::class,
             UserSeeder::class,
             SectionSeeder::class,
+            CommentTypeSeeder::class,
             CommentSeeder::class,
             MessageSeeder::class
         ]);

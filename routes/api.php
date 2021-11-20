@@ -9,6 +9,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LearningController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\CommentTypeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,6 +26,7 @@ Route::post("login",[AuthController::class,"login"]);
 Route::get("not_found",fn()=>"hello");
 Route::apiResource('sections', SectionController::class, ['only' => ['index']]);
 Route::apiResource('series', SeriesController::class, ['only' => ['index']]);
+Route::apiResource('comment_types', CommentTypeController::class, ['only' => ['index']]);
 Route::middleware('auth:sanctum')->group(
     function () {
         Route::get("current_user",[AuthController::class,"user"]);
