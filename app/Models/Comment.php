@@ -9,4 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    public function comment_type(){
+        return $this->belongsTo(CommentType::class);
+    }
 }

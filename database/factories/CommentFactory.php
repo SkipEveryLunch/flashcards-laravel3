@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Comment;
+use App\Models\CommentType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CommentFactory extends Factory
@@ -21,8 +22,9 @@ class CommentFactory extends Factory
      */
     public function definition()
     {
+        $comment_types = CommentType::all();
         return [
-            "comment_type"=>$this->faker->word(2,true),
+            "comment_type_id"=>$this->faker->randomElement($comment_types)->id,
             "comment_detail"=>$this->faker->paragraph(2,true),
         ];
     }

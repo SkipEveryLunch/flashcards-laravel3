@@ -6,15 +6,18 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Comment;
 use App\Models\Question;
+use App\Http\Resources\CommentResource;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
     public function show(Request $req,$questionId){
         $user = $req->user();
         $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
+        
         if($comment){
             return response()->json([
-                "comment"=>$comment
+                "comment"=>new CommentResource($comment),
             ]);
         }else{
             return response()->json([
@@ -27,9 +30,13 @@ class CommentController extends Controller
         $question = Question::find($questionId);
         if($question->posted_by === $user->id){
             $comments = Comment::where("question_id","=",$questionId)->get();
+            // $comment_types = $comments->groupBy("comment_type_id")->select("comment_type_id", DB::raw('count(*) as total'))->get();
+            $comment_types = Comment::where("question_id","=",$questionId)
+            ->join('comment_types','comment_types.id','=','comments.comment_type_id')->select('comment_types.id','comment_types.name',DB::raw('count(*) as count'))->groupBy("comment_type_id")
+            ->get();
             return response()->json([
                 "commented_to"=>$question->posted_by,
-                "comments"=>$comments
+                "comments"=>CommentResource::collection($comments),"comment_types"=>$comment_types
             ]);
         }else{
             return response()->json([
@@ -48,7 +55,7 @@ class CommentController extends Controller
                 "question_id"=>$questionId,
             ]);
             return response()->json([
-                "comment"=>$comment
+                "comment"=>new CommentResource($comment)
             ]);
         }else{
             return response()->json([
