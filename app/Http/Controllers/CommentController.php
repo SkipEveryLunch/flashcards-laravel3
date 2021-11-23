@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\Question;
 use App\Http\Resources\CommentResource;
 use Illuminate\Support\Facades\DB;
+use App\Events\CommentSent;
 
 class CommentController extends Controller
 {
@@ -30,7 +31,6 @@ class CommentController extends Controller
         $question = Question::find($questionId);
         if($question->posted_by === $user->id){
             $comments = Comment::where("question_id","=",$questionId)->get();
-            // $comment_types = $comments->groupBy("comment_type_id")->select("comment_type_id", DB::raw('count(*) as total'))->get();
             $comment_types = Comment::where("question_id","=",$questionId)
             ->join('comment_types','comment_types.id','=','comments.comment_type_id')->select('comment_types.id','comment_types.name',DB::raw('count(*) as count'))->groupBy("comment_type_id")
             ->get();
@@ -53,7 +53,8 @@ class CommentController extends Controller
                 "comment_detail"=>$req->input("comment_detail"),
                 "user_id"=>$user->id,
                 "question_id"=>$questionId,
-            ]);
+            ]);            
+            event(new CommentSent($questionId));
             return response()->json([
                 "comment"=>new CommentResource($comment)
             ]);
