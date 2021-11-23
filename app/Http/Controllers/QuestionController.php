@@ -29,10 +29,14 @@ class QuestionController extends Controller
     }
     public function store(Request $req)
     {
+        $user = $req->user();
         try{
-            $question = Question::create(
-                $req->only("front","back","section_id")
-            );
+            $question = Question::create([
+                'front'=>$req->input('front'),
+                'back'=>$req->input('back'),
+                'section_id'=>$req->input('section_id'),
+                'posted_by'=>$user->id
+            ]);
             return response()->json([
                 "question"=>new QuestionResource($question)
             ],Response::HTTP_CREATED);
