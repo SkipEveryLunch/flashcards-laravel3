@@ -49,7 +49,7 @@ class CommentController extends Controller
         $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
         if(!$comment){
             $comment = Comment::create([
-                "comment_type"=>$req->input("comment_type"),
+                "comment_type_id"=>$req->input("comment_type_id"),
                 "comment_detail"=>$req->input("comment_detail"),
                 "user_id"=>$user->id,
                 "question_id"=>$questionId,
@@ -68,7 +68,7 @@ class CommentController extends Controller
         $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
         if($comment){
             $comment->update(
-                $req->only("comment_type","comment_detail")
+                $req->only("comment_type_id","comment_detail")
             );
             return response()->json([
                 "comment"=>$comment
