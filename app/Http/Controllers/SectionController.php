@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Series;
 use App\Models\Section;
 use App\Models\Question;
 use App\Models\User;
@@ -17,8 +18,10 @@ class SectionController extends Controller
 
     public function index(){
         $sections = Section::all();
+        $series = Series::has("sections")->get();
         return response()->json([
-            "sections"=>SectionResource::collection($sections)
+            "sections"=>SectionResource::collection($sections),
+            "series"=>$series
         ]);
     }
     public function show(Request $req,$id)
@@ -55,10 +58,13 @@ class SectionController extends Controller
     }
     public function store(Request $req)
     {
+        $user = $req->user();
         try{
             $section = Section::create([
                 'title'=>$req->input('title'),
                 'description'=>$req->input('description'),
+                "user_id"=>$user->id,
+                'series_id'=>$req->input('series_id'),
             ]);
             return response()->json([
                 "section"=>$section

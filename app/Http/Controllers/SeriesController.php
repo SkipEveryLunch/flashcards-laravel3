@@ -10,7 +10,7 @@ class SeriesController extends Controller
     public function index(){
         $series = Series::all();
         return response()->json([
-            "series"=>$series->pluck("name")
+            "series"=>$series
         ]);
     }
 }

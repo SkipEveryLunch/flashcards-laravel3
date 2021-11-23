@@ -22,7 +22,7 @@ class SectionResource extends JsonResource
             "updated_at"=>$this->updated_at,
             "count_questions"=>$this->countQuestions(),
             "posted_by"=>$this->user_id,
-            "series"=>$this->series->name
+            "series"=>$this->series
         ];
     }
 }
