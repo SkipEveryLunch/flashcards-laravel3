@@ -48,16 +48,23 @@ class CommentController extends Controller
         $user = $req->user();
         $comment = Comment::where("user_id","=",$user->id)->where("question_id","=",$questionId)->first();
         if(!$comment){
-            $comment = Comment::create([
-                "comment_type_id"=>$req->input("comment_type_id"),
-                "comment_detail"=>$req->input("comment_detail"),
-                "user_id"=>$user->id,
-                "question_id"=>$questionId,
-            ]);            
-            event(new CommentSent($questionId));
-            return response()->json([
-                "comment"=>new CommentResource($comment)
-            ]);
+            $question = Question::find($questionId);
+            if($question->posted_by !== $user->id){
+                $comment = Comment::create([
+                    "comment_type_id"=>$req->input("comment_type_id"),
+                    "comment_detail"=>$req->input("comment_detail"),
+                    "user_id"=>$user->id,
+                    "question_id"=>$questionId,
+                ]);            
+                event(new CommentSent($questionId));
+                return response()->json([
+                    "comment"=>new CommentResource($comment)
+                ]);
+            }else{
+                return response()->json([
+                    "message"=>"this question is posted by you."
+                ],Response::HTTP_CONFLICT);
+            }
         }else{
             return response()->json([
                 "message"=>"already commented."
