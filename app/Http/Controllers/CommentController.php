@@ -29,7 +29,7 @@ class CommentController extends Controller
     public function showSeveral(Request $req,$questionId){
         $user = $req->user();
         $question = Question::find($questionId);
-        if($question->posted_by === $user->id){
+        if($question->posted_by === $user->id || $user->role->id === 1){
             $comments = Comment::where("question_id","=",$questionId)->get();
             $comment_types = Comment::where("question_id","=",$questionId)
             ->join('comment_types','comment_types.id','=','comments.comment_type_id')->select('comment_types.id','comment_types.name',DB::raw('count(*) as count'))->groupBy("comment_type_id")
