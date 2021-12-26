@@ -99,4 +99,15 @@ class CommentController extends Controller
             ],Response::HTTP_CONFLICT);
         }
     }
+    public function destroyForAdmin(Request $req,$commentId){
+        $user = $req->user();
+        if($user->role->id === 1){
+            Comment::destroy($commentId);
+            return response()->json(null,Response::HTTP_NO_CONTENT);
+        }else{
+            return response()->json([
+                "message"=>"you aren't an admin."
+            ],Response::FORBIDDEN);
+        }
+    }
 }

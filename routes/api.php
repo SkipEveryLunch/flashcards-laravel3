@@ -47,4 +47,5 @@ Route::middleware('auth:sanctum')->group(
         Route::delete("questions_comments/{questionId}",[CommentController::class,"destroy"]);
         Route::get("messages",[MessageController::class,"show"]);
         Route::put("messages/{messageId}",[MessageController::class,"confirm"]);
+        Route::delete("comments/{commentId}",[CommentController::class,"destroyForAdmin"]);
 });
